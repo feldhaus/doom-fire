@@ -1,26 +1,46 @@
 <!doctype html>
 <html>
+
 <head>
     <meta charset="utf-8">
     <title>DOOM - Fire</title>
     <style>
-        * {padding: 0; margin: 0}
+        * {
+            padding: 0;
+            margin: 0;
+        }
+
+        body {
+            background-color: #000000;
+        }
+
+        canvas {
+            position: absolute;
+            margin: auto;
+            display: block;
+            top: 0px;
+            bottom: 0px;
+            left: 0px;
+            right: 0px;
+        }
     </style>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pixi.js/4.7.0/pixi.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pixi.js/5.3.7/pixi.min.js"></script>
 </head>
+
 <body>
     <script type="text/javascript">
-        
+
         window.onload = function () {
-            // create application
-            const app = new PIXI.Application(800, 600, {
+            const WIDTH = 800;
+            const HEIGHT = 600;
+
+            const app = new PIXI.Application(WIDTH, HEIGHT, {
                 backgroundColor: 0x000000,
             });
             document.body.appendChild(app.view);
 
-            // ...
-            const FIRE_WIDTH = 800 / 5;
-            const FIRE_HEIGHT = 600 / 5;
+            const FIRE_WIDTH = WIDTH / 5;
+            const FIRE_HEIGHT = HEIGHT / 5;
             const FIRE_COLORS = [
                 0x070707, 0x1f0707, 0x2f0f07, 0x470f07, 0x571707, 0x671f07,
                 0x771f07, 0x8f2707, 0x9f2f07, 0xaf3f07, 0xbf4707, 0xc74707,
@@ -30,7 +50,6 @@
                 0xb7b72f, 0xb7b737, 0xcfcf6f, 0xdfdf9f, 0xefefc7, 0xffffff,
             ];
 
-            // ...
             const fireDots = [];
             for (let x = 0; x < FIRE_WIDTH; x++) {
                 for (let y = 0; y < FIRE_HEIGHT; y++) {
@@ -48,7 +67,6 @@
                 }
             }
 
-            // ...
             const firePixels = [];
             for (let i = 0; i < FIRE_WIDTH * FIRE_HEIGHT; i++) {
                 firePixels[i] = 0;
@@ -58,26 +76,26 @@
                 firePixels[(FIRE_HEIGHT - 1) * FIRE_WIDTH + i] = FIRE_COLORS.length - 1;
             }
 
-            function spreadFire (src) {
+            function spreadFire(src) {
                 const pixel = firePixels[src];
                 if (pixel === 0) {
                     firePixels[src - FIRE_WIDTH] = 0;
                 } else {
                     const randIdx = Math.round(Math.random() * 3.0) & 3;
                     const dst = src - randIdx + 1;
-                    firePixels[dst - FIRE_WIDTH ] = pixel - (randIdx & 1);
+                    firePixels[dst - FIRE_WIDTH] = pixel - (randIdx & 1);
                 }
             }
 
-            function doFire () {
-                for (let x = 0 ; x < FIRE_WIDTH; x++) {
+            function doFire() {
+                for (let x = 0; x < FIRE_WIDTH; x++) {
                     for (let y = 1; y < FIRE_HEIGHT; y++) {
                         spreadFire(y * FIRE_WIDTH + x);
                     }
                 }
             }
 
-            function draw () {
+            function draw() {
                 doFire();
                 let index, pixel, color;
                 for (let x = 0; x < FIRE_WIDTH; x++) {
@@ -90,18 +108,11 @@
                 }
             }
 
-            app.ticker.add(function(delta) {
+            app.ticker.add(function (delta) {
                 draw();
             });
-
-            // update size and positions
-            window.onresize = function () {
-                // app.renderer.resize(window.innerWidth, window.innerHeight);
-                // title.x = app.renderer.width / 2;
-                // tip.x = app.renderer.width / 2;
-                // generate();
-            }
         }
     </script>
 </body>
+
 </html>
